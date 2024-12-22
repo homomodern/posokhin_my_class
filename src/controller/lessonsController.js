@@ -1,5 +1,5 @@
 import { lessonsDAO } from '../dao/lessonsDAO.js'
-import { isDate } from '../validation/validator.js'
+import { isDate, isStatusValid } from '../validation/validator.js'
 
 export const lessonsController = async (req, res) => {
 
@@ -36,7 +36,7 @@ export const lessonsController = async (req, res) => {
     }
 
     if (status) {
-        if (status) {
+        if (isStatusValid(status)) {
             filters.status = status
         } else {
             return errorResponse('status')
