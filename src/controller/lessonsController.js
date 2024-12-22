@@ -67,6 +67,11 @@ export const lessonsController = async (req, res) => {
         }
     }
 
+    if (lessonsPerPage > 100) {
+        return res.status(400).json({
+            error: 'Можно запросить не больше 100 уроков на страницу'
+        })
+    }
 
     return res.json(await lessonsDAO(filters))
 
