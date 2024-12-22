@@ -1,17 +1,21 @@
 import { lessonsDAO } from '../dao/lessonsDAO.js'
+import { isDate } from '../validation/validator.js'
 
 export const lessonsController = async (req, res) => {
 
     const errorResponse = field =>
         res.status(400).json({ error: `Некорректно указано поле ${field}` })
 
+    const pageDefault = 1
+    const lessonsPerPageDefault = 10
+
     const {
         date,
         status,
-        page = 1,
         teacherIds,
         studentsCount,
-        lessonsPerPage = 10
+        page = pageDefault,
+        lessonsPerPage = lessonsPerPageDefault
     } = req.query
 
     const filters = {
@@ -21,9 +25,9 @@ export const lessonsController = async (req, res) => {
 
     if (date) {
         const dates = date.split(',')
-        if (dates.length === 1 && dates[0]) {
+        if (dates.length === 1 && dates.every(isDate)) {
             filters.date = dates[0]
-        } else if (dates.length === 2 && dates[0] && dates[1]) {
+        } else if (dates.length === 2 && dates.every(isDate)) {
             filters.dateFrom = dates[0]
             filters.dateTo = dates[1]
         } else {
