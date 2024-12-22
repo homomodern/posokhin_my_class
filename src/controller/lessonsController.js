@@ -1,5 +1,5 @@
 import { lessonsDAO } from '../dao/lessonsDAO.js'
-import { isDate, isStatusValid } from '../validation/validator.js'
+import { isDate, isStatusValid, isPositiveInt } from '../validation/validator.js'
 
 export const lessonsController = async (req, res) => {
 
@@ -45,7 +45,7 @@ export const lessonsController = async (req, res) => {
 
     if (teacherIds) {
         const teacherIdNumbers = teacherIds.split(',').map(Number)
-        if (teacherIdNumbers) {
+        if (teacherIdNumbers.every(isPositiveInt)) {
             filters.teacherIds = teacherIdNumbers
         } else {
             return errorResponse('teacherIds')
@@ -54,7 +54,7 @@ export const lessonsController = async (req, res) => {
 
     if (studentsCount) {
         const countRange = studentsCount.split(',')
-        if (countRange) {
+        if (countRange.every(isPositiveInt)) {
             if (countRange.length === 1) {
                 filters.studentsCount = countRange[0]
             }
