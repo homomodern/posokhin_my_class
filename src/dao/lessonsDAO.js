@@ -24,6 +24,12 @@ export const lessonsDAO = async filters => {
         query = query.where('lessons.status', filters.status)
     }
 
+    if (filters.teacherIds) {
+        query = query
+            .join('lesson_teachers', 'lessons.id', 'lesson_teachers.lesson_id')
+            .whereIn('lesson_teachers.teacher_id', filters.teacherIds)
+    }
+
     const lessons = await query
 
     const result = lessons.map(async lesson => {

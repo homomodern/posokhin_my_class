@@ -9,6 +9,7 @@ export const lessonsController = async (req, res) => {
         date,
         status,
         page = 1,
+        teacherIds,
         lessonsPerPage = 10
     } = req.query
 
@@ -34,6 +35,15 @@ export const lessonsController = async (req, res) => {
             filters.status = status
         } else {
             return errorResponse('status')
+        }
+    }
+
+    if (teacherIds) {
+        const teacherIdNumbers = teacherIds.split(',').map(Number)
+        if (teacherIdNumbers) {
+            filters.teacherIds = teacherIdNumbers
+        } else {
+            return errorResponse('teacherIds')
         }
     }
 
