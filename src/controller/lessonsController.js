@@ -4,12 +4,13 @@ export const lessonsController = async (req, res) => {
 
     const errorResponse = field =>
         res.status(400).json({ error: `Некорректно указано поле ${field}` })
-    
+
     const {
         date,
         status,
         page = 1,
         teacherIds,
+        studentsCount,
         lessonsPerPage = 10
     } = req.query
 
@@ -44,6 +45,21 @@ export const lessonsController = async (req, res) => {
             filters.teacherIds = teacherIdNumbers
         } else {
             return errorResponse('teacherIds')
+        }
+    }
+
+    if (studentsCount) {
+        const countRange = studentsCount.split(',')
+        if (countRange) {
+            if (countRange.length === 1) {
+                filters.studentsCount = countRange[0]
+            }
+            if (countRange.length === 2) {
+                filters.studentsCountFrom = countRange[0]
+                filters.studentsCountTo = countRange[1]
+            }
+        } else {
+            return errorResponse('studentsCount')
         }
     }
 

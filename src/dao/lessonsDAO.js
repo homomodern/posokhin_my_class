@@ -30,6 +30,17 @@ export const lessonsDAO = async filters => {
             .whereIn('lesson_teachers.teacher_id', filters.teacherIds)
     }
 
+    if (filters.studentsCount) {
+        query = query.havingRaw('count(lesson_students.lesson_id) = ?', [filters.studentsCount])
+    }
+
+    if (filters.studentsCountFrom && filters.studentsCountTo) {
+        query = query.havingRaw('count(lesson_students.lesson_id) BETWEEN ? AND ?', [
+            filters.studentsCountFrom,
+            filters.studentsCountTo,
+        ])
+    }
+
     const lessons = await query
 
     const result = lessons.map(async lesson => {
