@@ -7,6 +7,7 @@ export const lessonsController = async (req, res) => {
     
     const {
         date,
+        status,
         page = 1,
         lessonsPerPage = 10
     } = req.query
@@ -27,6 +28,15 @@ export const lessonsController = async (req, res) => {
             return errorResponse('date')
         }
     }
+
+    if (status) {
+        if (status) {
+            filters.status = status
+        } else {
+            return errorResponse('status')
+        }
+    }
+
 
     return res.json(await lessonsDAO(filters))
 

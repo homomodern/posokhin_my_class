@@ -20,6 +20,10 @@ export const lessonsDAO = async filters => {
         query = query.whereBetween('lessons.date', [filters.dateFrom, filters.dateTo])
     }
 
+    if (filters.status) {
+        query = query.where('lessons.status', filters.status)
+    }
+
     const lessons = await query
 
     const result = lessons.map(async lesson => {
