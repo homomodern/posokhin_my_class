@@ -3,8 +3,8 @@ import { isDate, isStatusValid, isPositiveInt } from '../validation/validator.js
 
 export const lessonsController = async (req, res) => {
 
-    const errorResponse = field =>
-        res.status(400).json({ error: `Некорректно указано поле ${field}` })
+    const errorResponse = param =>
+        res.status(400).json({ error: `Некорректно указан параметр ${param}` })
 
     const pageDefault = 1
     const lessonsPerPageDefault = 10
