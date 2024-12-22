@@ -10,9 +10,15 @@ export const lessonsDAO = async filters => {
         .count('lesson_students.lesson_id as visitCount')
         .leftJoin('lesson_students', 'lessons.id', 'lesson_students.lesson_id')
         .groupBy('lessons.id')
+        .offset(offset).limit(limit)
 
+    if (filters.date) {
+        query = query.where('lessons.date', filters.date)
+    }
 
-    query = query.offset(offset).limit(limit)
+    if (filters.dateFrom && filters.dateTo) {
+        query = query.whereBetween('lessons.date', [filters.dateFrom, filters.dateTo])
+    }
 
     const lessons = await query
 
@@ -37,6 +43,6 @@ export const lessonsDAO = async filters => {
             teachers,
         }
     })
-    
+
     return Promise.all(result)
 }
