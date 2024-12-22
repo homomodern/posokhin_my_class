@@ -3,7 +3,7 @@ import { isDate, isStatusValid, isPositiveInt } from '../validation/validator.js
 
 export const lessonsController = async (req, res) => {
 
-    const errorResponse = param =>
+    const sendErrorResponse = param =>
         res.status(400).json({ error: `Некорректно указан параметр ${param}` })
 
     const pageDefault = 1
@@ -31,7 +31,7 @@ export const lessonsController = async (req, res) => {
             filters.dateFrom = dates[0]
             filters.dateTo = dates[1]
         } else {
-            return errorResponse('date')
+            sendErrorResponse('date')
         }
     }
 
@@ -39,7 +39,7 @@ export const lessonsController = async (req, res) => {
         if (isStatusValid(status)) {
             filters.status = status
         } else {
-            return errorResponse('status')
+            sendErrorResponse('status')
         }
     }
 
@@ -48,7 +48,7 @@ export const lessonsController = async (req, res) => {
         if (teacherIdNumbers.every(isPositiveInt)) {
             filters.teacherIds = teacherIdNumbers
         } else {
-            return errorResponse('teacherIds')
+            sendErrorResponse('teacherIds')
         }
     }
 
@@ -63,16 +63,16 @@ export const lessonsController = async (req, res) => {
                 filters.studentsCountTo = countRange[1]
             }
         } else {
-            return errorResponse('studentsCount')
+            sendErrorResponse('studentsCount')
         }
     }
 
     if (lessonsPerPage > 100) {
-        return res.status(400).json({
+        res.status(400).json({
             error: 'Можно запросить не больше 100 уроков на страницу'
         })
     }
 
-    return res.json(await lessonsDAO(filters))
+    res.json(await lessonsDAO(filters))
 
 }
