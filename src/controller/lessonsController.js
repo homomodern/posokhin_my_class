@@ -8,6 +8,7 @@ export const lessonsController = async (req, res) => {
 
         const pageDefault = 1
         const lessonsPerPageDefault = 10
+        const maxPageSize = 100
 
         const {
             date,
@@ -31,7 +32,7 @@ export const lessonsController = async (req, res) => {
                 filters.dateFrom = dates[0]
                 filters.dateTo = dates[1]
             } else {
-                sendErrorResponse('date')
+                return sendErrorResponse('date')
             }
         }
 
@@ -39,7 +40,7 @@ export const lessonsController = async (req, res) => {
             if (isStatusValid(status)) {
                 filters.status = status
             } else {
-                sendErrorResponse('status')
+                return sendErrorResponse('status')
             }
         }
 
@@ -48,28 +49,27 @@ export const lessonsController = async (req, res) => {
             if (teacherIdNumbers.every(isPositiveInt)) {
                 filters.teacherIds = teacherIdNumbers
             } else {
-                sendErrorResponse('teacherIds')
+                return sendErrorResponse('teacherIds')
             }
         }
 
         if (studentsCount) {
-            const countRange = studentsCount.split(',')
+            const countRange = studentsCount.split(',').map(Number)
             if (countRange.every(isPositiveInt)) {
                 if (countRange.length === 1) {
                     filters.studentsCount = countRange[0]
-                }
-                if (countRange.length === 2) {
+                } else if (countRange.length === 2) {
                     filters.studentsCountFrom = countRange[0]
                     filters.studentsCountTo = countRange[1]
+                } else {
+                    return sendErrorResponse('studentsCount')
                 }
-            } else {
-                sendErrorResponse('studentsCount')
             }
         }
 
-        if (lessonsPerPage > 100) {
-            res.status(400).json({
-                error: 'Можно запросить не больше 100 уроков на страницу'
+        if (lessonsPerPage > maxPageSize) {
+            return res.status(400).json({
+                error: `Можно запросить не больше ${maxPageSize} уроков на страницу`
             })
         }
 
